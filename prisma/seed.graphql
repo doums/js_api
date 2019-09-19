@@ -1,0 +1,11 @@
+mutation {
+    createUser(
+        data: {
+            email: "toto@toto.to",
+            username: "toto",
+            password: "$2a$10$kNb019ifYgg./BVpvK0JMe3dYMD9px2WfsOqJhN42k.e4WwbC3uiW" # -> toto
+        }
+    ) {
+        id
+    }
+}

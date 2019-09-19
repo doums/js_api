@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "outDir": "./dist",
+    "lib": ["esnext", "dom"],
+    // for the following -> https://github.com/prisma/prisma-examples/blob/master/typescript/graphql-auth/tsconfig.json
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "skipLibCheck": true
+  }
+}

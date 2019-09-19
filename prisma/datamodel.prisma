@@ -1,0 +1,43 @@
+enum PostType {
+  ARTICLE,
+  HOME,
+  ABOUT,
+  CONTACT
+}
+
+type Post @db(name: "post") {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  title: String! @unique
+  body: Json!
+  author: User!
+  published: Boolean!
+  images: [Image!]! @relation(name: "ImagesByPost", onDelete: CASCADE)
+  type: PostType!
+  slug: String! @unique
+}
+
+type User @db(name: "user") {
+  id: ID! @id
+  email: String! @unique
+  password: String!
+  username: String! @unique
+  bio: String
+  posts: [Post!]!
+}
+
+type RegStatus @db(name: "reg_status") {
+  id: ID! @id
+  isOpen: Boolean!
+}
+
+type Image @db(name: "image") {
+  id: ID! @id
+  path: String!
+  fileName: String! @unique
+  type: String!
+  url: String! @unique
+  entityId: String!
+  post: Post! @relation(name: "ImagesByPost")
+}

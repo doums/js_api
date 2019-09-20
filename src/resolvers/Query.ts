@@ -7,7 +7,7 @@ interface Token {
   userId: string;
 }
 
-export const Query = prismaObjectType({
+export const Query = prismaObjectType<'Query'>({
   name: 'Query',
   definition: t => {
     t.field('posts', {
@@ -20,21 +20,6 @@ export const Query = prismaObjectType({
           {
             where: args.where,
             orderBy: args.orderBy,
-            skip: args.skip,
-            first: args.first,
-            last: args.last
-          }
-        )
-      }
-    })
-    t.field('allPublished', {
-      ...t.prismaType.posts,
-      resolve: async (parent, args, ctx) => {
-        return ctx.prisma.posts(
-          {
-            where: { type: 'ARTICLE', published: true },
-            orderBy: args.orderBy,
-
             skip: args.skip,
             first: args.first,
             last: args.last

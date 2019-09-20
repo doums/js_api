@@ -3,7 +3,11 @@
     "es6": true,
     "node": true
   },
-  "extends": ["plugin:@typescript-eslint/recommended", "eslint:recommended"],
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended"
+  ],
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module"

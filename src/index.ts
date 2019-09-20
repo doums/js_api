@@ -5,21 +5,11 @@ import { makePrismaSchema } from 'nexus-prisma'
 import * as path from 'path'
 import * as allTypes from './resolvers'
 import { ApolloServer } from 'apollo-server'
-import * as fs from 'fs'
-import { PORT, UPLOAD_DIR } from './constant'
-import { GraphQLUpload } from 'graphql-upload'
 import * as jwt from 'jsonwebtoken'
 import { Token } from './types'
+import { PORT } from "./constant"
 
 dotenv.config()
-
-fs.access(UPLOAD_DIR, fs.constants.F_OK | fs.constants.W_OK, err => {
-  if (err && err.code === 'ENOENT') {
-    fs.mkdirSync(UPLOAD_DIR)
-  } else if (err) {
-    throw new Error(`${UPLOAD_DIR} is read-only`)
-  }
-})
 
 const prisma = new Prisma({
   endpoint: process.env.PRISMA_ENDPOINT,
@@ -28,7 +18,7 @@ const prisma = new Prisma({
 
 const schema = makePrismaSchema({
   // Provide all the GraphQL types we've implemented
-  types: [ allTypes, GraphQLUpload ],
+  types: [ allTypes ],
 
   // Configure the interface to Prisma
   prisma: {

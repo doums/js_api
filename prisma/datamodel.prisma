@@ -1,21 +1,10 @@
-enum PostType {
-  ARTICLE,
-  HOME,
-  ABOUT,
-  CONTACT
-}
-
 type Post @db(name: "post") {
   id: ID! @id
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  title: String! @unique
-  body: Json!
-  author: User!
-  published: Boolean!
-  images: [Image!]! @relation(name: "ImagesByPost", onDelete: CASCADE)
-  type: PostType!
-  slug: String! @unique
+  text: String!
+  author: User! @relation(name: "PostsByeUser")
+  talk: Talk! @relation(name: "PostsByTalk")
 }
 
 type User @db(name: "user") {
@@ -24,20 +13,17 @@ type User @db(name: "user") {
   password: String!
   username: String! @unique
   bio: String
-  posts: [Post!]!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  posts: [Post!]! @relation(name: "PostsByUser", onDelete: CASCADE)
 }
 
-type RegStatus @db(name: "reg_status") {
+type Talk @db(name: "talk") {
   id: ID! @id
-  isOpen: Boolean!
-}
-
-type Image @db(name: "image") {
-  id: ID! @id
-  path: String!
-  fileName: String! @unique
-  type: String!
-  url: String! @unique
-  entityId: String!
-  post: Post! @relation(name: "ImagesByPost")
+  name: String! @unique
+  description: String! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  activeUsers: [User!]!
+  posts: [Post!]! @relation(name: "PostsByTalk", onDelete: CASCADE)
 }

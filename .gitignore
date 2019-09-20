@@ -2,7 +2,6 @@
 node_modules/
 src/generated/
 dist/
-.ecosystem.config.js
 .env
 graphql.config.json
 upload/

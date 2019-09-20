@@ -3,7 +3,6 @@ import { User } from './User'
 import { AuthCheck } from './AuthCheck'
 import { Mutation } from './Mutation'
 import { AuthPayload } from './AuthPayload'
-import { ImageInput } from './ImageInput'
 
 export const resolvers = {
   Query,
@@ -11,5 +10,4 @@ export const resolvers = {
   User,
   AuthCheck,
   AuthPayload,
-  ImageInput
 }

@@ -1,61 +1,18 @@
 import * as dotenv from 'dotenv'
-import { Prisma } from './generated/prisma-client'
-import datamodelInfo from './generated/nexus-prisma'
-import { makePrismaSchema } from 'nexus-prisma'
-import * as path from 'path'
-import * as allTypes from './resolvers'
+dotenv.config()
+
+import { prisma } from './generated/prisma-client'
+import typeDefs from './typeDefs'
+import { resolvers } from './resolvers'
 import { ApolloServer } from 'apollo-server'
 import * as jwt from 'jsonwebtoken'
 import { Token } from './types'
-import { PORT } from "./constant"
+import { PORT } from './constant'
 
-dotenv.config()
-
-const prisma = new Prisma({
-  endpoint: process.env.PRISMA_ENDPOINT,
-  secret: process.env.PRISMA_SECRET
-})
-
-const schema = makePrismaSchema({
-  // Provide all the GraphQL types we've implemented
-  types: [ allTypes ],
-
-  // Configure the interface to Prisma
-  prisma: {
-    datamodelInfo,
-    client: prisma
-  },
-
-  // Specify where Nexus should put the generated files
-  outputs: {
-    schema: path.join(__dirname, './generated/schema.graphql'),
-    typegen: path.join(__dirname, './generated/nexus.ts')
-  },
-
-  // Configure nullability of input arguments: All arguments are non-nullable by default
-  nonNullDefaults: {
-    input: true,
-    output: true
-  },
-
-  // Configure automatic type resolution for the TS representations of the associated types
-  typegenAutoConfig: {
-    sources: [
-      {
-        source: path.join(__dirname, './types.ts'),
-        alias: 'types'
-      }
-    ],
-    contextType: 'types.Context'
-  },
-
-  shouldGenerateArtifacts: Boolean(
-    !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
-  )
-})
 
 const server = new ApolloServer({
-  schema,
+  typeDefs,
+  resolvers,
   context: async req => {
     let user = null
     const authorization= req.req.get('Authorization')

@@ -9,7 +9,6 @@ import * as jwt from 'jsonwebtoken'
 import { Token } from './types'
 import { PORT } from './constant'
 
-
 const server = new ApolloServer({
   typeDefs,
   resolvers,

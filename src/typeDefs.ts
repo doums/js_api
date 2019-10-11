@@ -6,8 +6,11 @@ const typeDefs = gql`
     type Query {
         post(id: ID!): Post!
         talk(id: ID!): Talk!
+        user(id: ID!): User!
         posts: [Post!]!
         talks: [Talk!]!
+        users: [User!]!
+        amIAuth: AuthCheck!
     }
     
     type Mutation {
@@ -23,6 +26,12 @@ const typeDefs = gql`
         createPost(text: String!, talkId: ID!): Post!
         updatePost(id: ID!, text: String!): Post!
         deletePost(id: ID!): Post!
+        updateBio(bio: String!): User!
+    }
+    
+    type Subscription {
+        postSub: Post
+        talkSub: Talk!
     }
     
     type Post {
@@ -58,6 +67,11 @@ const typeDefs = gql`
         updatedAt: DateTime!
         posts: [Post!]!
         activeTalks: [Talk!]!
+    }
+    
+    type AuthCheck {
+        isAuth: Boolean!
+        me: User
     }
 `
 

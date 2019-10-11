@@ -1,17 +1,11 @@
-import { prismaObjectType } from 'nexus-prisma'
+const User = {
+  activeTalks(root, args, ctx) {
+    return ctx.prisma.user({ id: root.id }).activeTalks()
+  },
 
-export const User = prismaObjectType<'User'>({
-  name: 'User',
-  definition (t) {
-    t.prismaFields([
-      'id',
-      'email',
-      'username',
-      'bio',
-      {
-        name: 'posts',
-        args: [] // remove the arguments from the `posts` field of the `User` type in the Prisma schema
-      }
-    ])
+  posts(root, args, ctx) {
+    return ctx.prisma.user({ id: root.id }).posts()
   }
-})
+}
+
+export default User

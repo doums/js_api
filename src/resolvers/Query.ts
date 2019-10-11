@@ -1,15 +1,28 @@
 import * as jwt from 'jsonwebtoken'
-import { AuthenticationError } from 'apollo-server'
+import { ApolloError, AuthenticationError } from 'apollo-server'
 
 interface Token {
   userId: string;
 }
 
-export const Query = {
-  posts(root, args, ctx) {
-    if (!ctx.user) {
-      throw new AuthenticationError('Not authorized')
+const Query = {
+  async post(root, { id }, ctx) {
+    const postExists = await ctx.prisma.$exists.post({ id })
+    if (!postExists) {
+      throw new ApolloError(`No post found for id "${id}"`, 'USER_ERROR')
     }
+    return ctx.prisma.post({ id })
+  },
+
+  async talk(root, { id }, ctx) {
+    const talkExists = await ctx.prisma.$exists.talk({ id })
+    if (!talkExists) {
+      throw new ApolloError(`No talk found for id "${id}"`, 'USER_ERROR')
+    }
+    return ctx.prisma.talk({ id })
+  },
+
+  posts(root, args, ctx) {
     return ctx.prisma.posts(
       {
         where: args.where,
@@ -19,6 +32,16 @@ export const Query = {
         last: args.last
       }
     )
+  },
+
+  talks(root, args, ctx) {
+    return ctx.prisma.talks({
+      where: args.where,
+      orderBy: args.orderBy,
+      skip: args.skip,
+      first: args.first,
+      last: args.last
+    })
   }
 }
 
@@ -76,3 +99,5 @@ export const Query = {
  *   }
  * })
  *  */
+
+export default Query

@@ -3,7 +3,7 @@ type Post @db(name: "post") {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
   text: String!
-  author: User! @relation(name: "PostsByeUser")
+  author: User! @relation(name: "PostsByUser")
   talk: Talk! @relation(name: "PostsByTalk")
 }
 
@@ -16,6 +16,7 @@ type User @db(name: "user") {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
   posts: [Post!]! @relation(name: "PostsByUser", onDelete: CASCADE)
+  activeTalks: [Talk!]!
 }
 
 type Talk @db(name: "talk") {

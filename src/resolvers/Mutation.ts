@@ -12,7 +12,7 @@ const Mutation = {
     }
   },
 
-  async login(root, { email, password }, ctx) {
+  async signin(root, { email, password }, ctx) {
     const user = await ctx.prisma.user({ email })
     if (!user) {
       throw new Error('Invalid email')

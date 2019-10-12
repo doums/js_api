@@ -1,4 +1,4 @@
-const postSubscribe = (root, args, ctx) => {
+const postSubscribe = async (root, args, ctx) => {
   console.log("---------------")
   console.log(ctx)
   console.log("---------------")

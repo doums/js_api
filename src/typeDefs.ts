@@ -19,7 +19,7 @@ const typeDefs = gql`
             password: String!
             username: String!
         ): AuthPayload!
-        login(email: String!, password: String!): AuthPayload!
+        signin(email: String!, password: String!): AuthPayload!
         createTalk(name: String!, description: String!): Talk!
         joinTalk(id: ID!): Talk!
         leaveTalk(id: ID!): Talk!

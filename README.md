@@ -8,6 +8,10 @@
 git clone https://github.com/doums/js_api.git
 ```
 
+#### prerequisites
+- docker
+- node (npm)
+
 #### installation
 ```
 npm i

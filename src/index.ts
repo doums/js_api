@@ -6,13 +6,14 @@ import typeDefs from './typeDefs'
 import { resolvers } from './resolvers'
 import { ApolloServer } from 'apollo-server'
 import * as jwt from 'jsonwebtoken'
-import { Token } from './types'
+import { Context, Token } from './types'
 import { PORT } from './constant'
+import { GraphQLError } from 'graphql'
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async req => {
+  context: async (req): Promise<Context> => {
     let user = null
     const authorization= req.req.get('Authorization')
     if (authorization) {
@@ -34,7 +35,7 @@ const server = new ApolloServer({
       'editor.reuseHeaders': true
     }
   },
-  formatError: error => {
+  formatError: (error): GraphQLError => {
     console.log(error)
     return error
   }

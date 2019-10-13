@@ -29,11 +29,6 @@ const typeDefs = gql`
         updateBio(bio: String!): User!
     }
     
-    type Subscription {
-        postSub: Post
-        talkSub: Talk!
-    }
-    
     type Post {
         id: ID!
         createdAt: DateTime!

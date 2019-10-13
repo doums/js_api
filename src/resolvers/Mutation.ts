@@ -1,9 +1,11 @@
 import * as jwt from 'jsonwebtoken'
 import * as bcrypt from 'bcrypt'
 import { ApolloError, AuthenticationError } from 'apollo-server'
+import { AuthPayload } from '../types'
+import { Post, Talk, User } from '../generated/prisma-client'
 
 const Mutation = {
-  async signup(root, args, ctx) {
+  async signup (root, args, ctx): Promise<AuthPayload> {
     const password = await bcrypt.hash(args.password, 10)
     const user = await ctx.prisma.createUser({ ...args, password })
     return {
@@ -12,7 +14,7 @@ const Mutation = {
     }
   },
 
-  async signin(root, { email, password }, ctx) {
+  async signin (root, { email, password }, ctx): Promise<AuthPayload> {
     const user = await ctx.prisma.user({ email })
     if (!user) {
       throw new Error('Invalid email')
@@ -27,7 +29,7 @@ const Mutation = {
     }
   },
 
-  async createTalk(root, { name, description }, ctx) {
+  async createTalk (root, { name, description }, ctx): Promise<Talk> {
     if (!ctx.user) {
       throw new AuthenticationError('Not authorized')
     }
@@ -40,7 +42,7 @@ const Mutation = {
     })
   },
 
-  async joinTalk(root, { id }, ctx) {
+  async joinTalk (root, { id }, ctx): Promise<Talk> {
     const { user } = ctx
     if (!user) {
       throw new AuthenticationError('Not authorized')
@@ -50,7 +52,7 @@ const Mutation = {
       throw new ApolloError(`No talk found for id "${id}"`, 'USER_ERROR')
     }
     const activeUsers = await ctx.prisma.talk({ id }).activeUsers()
-    if (activeUsers.find(activeUser => activeUser.id == user.id)) {
+    if (activeUsers.find((activeUser: User) => activeUser.id == user.id)) {
       throw new ApolloError('The user is already participating in this talk', 'USER_ERROR')
     }
     return ctx.prisma.updateTalk({
@@ -63,7 +65,7 @@ const Mutation = {
     })
   },
 
-  async leaveTalk(root, { id }, ctx) {
+  async leaveTalk (root, { id }, ctx): Promise<Talk> {
     const { user } = ctx
     if (!user) {
       throw new AuthenticationError('Not authorized')
@@ -73,7 +75,7 @@ const Mutation = {
       throw new ApolloError(`No talk found for id "${id}"`, 'USER_ERROR')
     }
     const activeUsers = await ctx.prisma.talk({ id }).activeUsers()
-    if (!activeUsers.find(activeUser => activeUser.id == user.id)) {
+    if (!activeUsers.find((activeUser: User) => activeUser.id == user.id)) {
       throw new ApolloError('The user does not participate in this discussion', 'USER_ERROR')
     }
     return ctx.prisma.updateTalk({
@@ -86,7 +88,7 @@ const Mutation = {
     })
   },
 
-  async createPost(root, { text, talkId }, ctx) {
+  async createPost (root, { text, talkId }, ctx): Promise<Post> {
     if (!ctx.user) {
       throw new AuthenticationError('Not authorized')
     }
@@ -95,7 +97,7 @@ const Mutation = {
       throw new ApolloError(`No talk found for id "${talkId}"`, 'USER_ERROR')
     }
     const activeUsers = await ctx.prisma.talk({ id: talkId }).activeUsers()
-    if (!activeUsers.find(activeUser => activeUser.id === ctx.user.id)) {
+    if (!activeUsers.find((activeUser: User) => activeUser.id === ctx.user.id)) {
       throw new ApolloError('The user does not participate in this discussion', 'USER_ERROR')
     }
     return ctx.prisma.createPost({
@@ -109,7 +111,7 @@ const Mutation = {
     })
   },
 
-  async updatePost(root, { id, text }, ctx) {
+  async updatePost (root, { id, text }, ctx): Promise<Post> {
     if (!ctx.user) {
       throw new AuthenticationError('Not authorized')
     }
@@ -127,7 +129,7 @@ const Mutation = {
     })
   },
 
-  async deletePost(root, { id }, ctx) {
+  async deletePost (root, { id }, ctx): Promise<Post> {
     if (!ctx.user) {
       throw new AuthenticationError('Not authorized')
     }
@@ -142,7 +144,7 @@ const Mutation = {
     return ctx.prisma.deletePost({ id })
   },
 
-  async updateBio(root, { bio }, ctx) {
+  async updateBio (root, { bio }, ctx): Promise<User> {
     if (!ctx.user) {
       throw new AuthenticationError('Not authorized')
     }

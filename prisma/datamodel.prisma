@@ -2,7 +2,7 @@ type Post @db(name: "post") {
   id: ID! @id
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  text: String!
+  body: String!
   author: User! @relation(name: "PostsByUser")
   talk: Talk! @relation(name: "PostsByTalk")
 }

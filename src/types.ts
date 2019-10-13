@@ -11,7 +11,7 @@ export interface Token {
 }
 
 export interface AuthCheck {
-  me: User;
+  me: User | null;
   isAuth: boolean;
 }
 

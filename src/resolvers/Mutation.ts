@@ -101,7 +101,7 @@ const Mutation = {
     if (!activeUsers.find((activeUser: User) => activeUser.id === user.id)) {
       throw new ApolloError('The user does not participate in this discussion', 'USER_ERROR')
     }
-    return ctx.prisma.createPost({
+    const newPost = await ctx.prisma.createPost({
       text,
       author: {
         connect: { id: user.id }
@@ -110,6 +110,10 @@ const Mutation = {
         connect: { id: talkId }
       }
     })
+    ctx.io.emit('post_created', {
+      talkId
+    })
+    return newPost
   },
 
   async updatePost (root: any, { id, text }: any, ctx: Context): Promise<Post> {
@@ -118,16 +122,21 @@ const Mutation = {
     }
     const post = await ctx.prisma.post({ id })
     const author = await ctx.prisma.post({ id }).author()
+    const talk = await ctx.prisma.post({ id }).talk()
     if (!post) {
       throw new ApolloError(`No post found for id "${id}"`, 'USER_ERROR')
     }
     if (author.id !== ctx.user.id) {
       throw new ApolloError('The current user is not the author of this post', 'USER_ERROR')
     }
-    return ctx.prisma.updatePost({
+    const updatedPost = ctx.prisma.updatePost({
       where: { id },
       data: { text }
     })
+    ctx.io.emit('post_updated', {
+      talkId: talk.id
+    })
+    return updatedPost
   },
 
   async deletePost (root: any, { id }: any, ctx: Context): Promise<Post> {
@@ -135,6 +144,7 @@ const Mutation = {
       throw new AuthenticationError('Not authorized')
     }
     const post = await ctx.prisma.$exists.post({ id })
+    const talk = await ctx.prisma.post({ id }).talk()
     const author = await ctx.prisma.post({ id }).author()
     if (!post) {
       throw new ApolloError(`No post found for id "${id}"`, 'USER_ERROR')
@@ -142,7 +152,11 @@ const Mutation = {
     if (author.id !== ctx.user.id) {
       throw new ApolloError('The current user is not the author of this post', 'USER_ERROR')
     }
-    return ctx.prisma.deletePost({ id })
+    const deletedPost = await ctx.prisma.deletePost({ id })
+    ctx.io.emit('post_deleted', {
+      talkId: talk.id
+    })
+    return deletedPost
   },
 
   async updateBio (root: any, { bio }: any, ctx: Context): Promise<User> {

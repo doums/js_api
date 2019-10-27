@@ -1,9 +1,11 @@
 import { Prisma, User } from './generated/prisma-client'
+import SocketIO from 'socket.io'
 
 export interface Context {
   prisma: Prisma;
   req: any;
   user: User | null;
+  io: SocketIO.Server;
 }
 
 export interface Token {

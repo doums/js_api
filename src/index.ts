@@ -10,10 +10,13 @@ import { Context, Token } from './types'
 import { PORT } from './constant'
 import Koa from 'koa'
 import { GraphQLError } from 'graphql'
-import Router from 'koa-router'
+import io from 'socket.io'
 
 const app = new Koa()
-// const router = new Router()
+
+// inject socket.io in koa context
+app.context.io = io(app)
+
 
 const server = new ApolloServer({
   typeDefs,
@@ -30,7 +33,7 @@ const server = new ApolloServer({
         user = null
       }
     }
-    return ({ ...req, prisma, user })
+    return ({ ...req, prisma, user, io: req.ctx.io })
   },
   introspection: true,
   playground: {
@@ -60,22 +63,10 @@ app.use(async (ctx, next) => {
   }
 })
 
-// CORS's needs
-app.use(async (ctx, next) => {
-  ctx.set('Access-Control-Allow-Origin', '*')
-  ctx.set('Access-Control-Allow-Methods', 'GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH')
-  ctx.set('Access-Control-Allow-Headers', 'Content-Type')
-  await next()
+server.applyMiddleware({
+  app,
+  path: '/',
+  cors: true
 })
 
-// accept CORS preflight request
-// router.options('/', ctx => {
-//   ctx.status = 200
-// })
-
-server.applyMiddleware({ app, path: '/' })
-
-app
-  // .use(router.routes())
-  // .use(router.allowedMethods())
-  .listen(PORT, () => console.log(`🗻app ready on port ${PORT}`))
+app.listen(PORT, () => console.log(`app ready on port ${PORT}`))

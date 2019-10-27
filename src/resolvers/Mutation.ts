@@ -1,11 +1,11 @@
 import * as jwt from 'jsonwebtoken'
 import * as bcrypt from 'bcrypt'
-import { ApolloError, AuthenticationError } from 'apollo-server'
-import { AuthPayload } from '../types'
+import { ApolloError, AuthenticationError } from 'apollo-server-koa'
+import { AuthPayload, Context } from '../types'
 import { Post, Talk, User } from '../generated/prisma-client'
 
 const Mutation = {
-  async signup (root, args, ctx): Promise<AuthPayload> {
+  async signup (root: any, args: any, ctx: Context): Promise<AuthPayload> {
     const password = await bcrypt.hash(args.password, 10)
     const user = await ctx.prisma.createUser({ ...args, password })
     return {
@@ -14,7 +14,7 @@ const Mutation = {
     }
   },
 
-  async signin (root, { email, password }, ctx): Promise<AuthPayload> {
+  async signin (root: any, { email, password }: any, ctx: Context): Promise<AuthPayload> {
     const user = await ctx.prisma.user({ email })
     if (!user) {
       throw new Error('Invalid email')
@@ -29,7 +29,7 @@ const Mutation = {
     }
   },
 
-  async createTalk (root, { name, description }, ctx): Promise<Talk> {
+  async createTalk (root: any, { name, description }: any, ctx: Context): Promise<Talk> {
     if (!ctx.user) {
       throw new AuthenticationError('Not authorized')
     }
@@ -42,7 +42,7 @@ const Mutation = {
     })
   },
 
-  async joinTalk (root, { id }, ctx): Promise<Talk> {
+  async joinTalk (root: any, { id }: any, ctx: Context): Promise<Talk> {
     const { user } = ctx
     if (!user) {
       throw new AuthenticationError('Not authorized')
@@ -65,7 +65,7 @@ const Mutation = {
     })
   },
 
-  async leaveTalk (root, { id }, ctx): Promise<Talk> {
+  async leaveTalk (root: any, { id }: any, ctx: Context): Promise<Talk> {
     const { user } = ctx
     if (!user) {
       throw new AuthenticationError('Not authorized')
@@ -88,8 +88,9 @@ const Mutation = {
     })
   },
 
-  async createPost (root, { text, talkId }, ctx): Promise<Post> {
-    if (!ctx.user) {
+  async createPost (root: any, { text, talkId }: any, ctx: Context): Promise<Post> {
+    const { user } = ctx
+    if (!user) {
       throw new AuthenticationError('Not authorized')
     }
     const talkExists = await ctx.prisma.$exists.talk({ id: talkId })
@@ -97,13 +98,13 @@ const Mutation = {
       throw new ApolloError(`No talk found for id "${talkId}"`, 'USER_ERROR')
     }
     const activeUsers = await ctx.prisma.talk({ id: talkId }).activeUsers()
-    if (!activeUsers.find((activeUser: User) => activeUser.id === ctx.user.id)) {
+    if (!activeUsers.find((activeUser: User) => activeUser.id === user.id)) {
       throw new ApolloError('The user does not participate in this discussion', 'USER_ERROR')
     }
     return ctx.prisma.createPost({
       text,
       author: {
-        connect: { id: ctx.user.id }
+        connect: { id: user.id }
       },
       talk: {
         connect: { id: talkId }
@@ -111,7 +112,7 @@ const Mutation = {
     })
   },
 
-  async updatePost (root, { id, text }, ctx): Promise<Post> {
+  async updatePost (root: any, { id, text }: any, ctx: Context): Promise<Post> {
     if (!ctx.user) {
       throw new AuthenticationError('Not authorized')
     }
@@ -129,7 +130,7 @@ const Mutation = {
     })
   },
 
-  async deletePost (root, { id }, ctx): Promise<Post> {
+  async deletePost (root: any, { id }: any, ctx: Context): Promise<Post> {
     if (!ctx.user) {
       throw new AuthenticationError('Not authorized')
     }
@@ -144,7 +145,7 @@ const Mutation = {
     return ctx.prisma.deletePost({ id })
   },
 
-  async updateBio (root, { bio }, ctx): Promise<User> {
+  async updateBio (root: any, { bio }: any, ctx: Context): Promise<User> {
     if (!ctx.user) {
       throw new AuthenticationError('Not authorized')
     }

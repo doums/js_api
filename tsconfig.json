@@ -4,6 +4,7 @@
     "outDir": "./dist",
     "lib": ["esnext", "dom"],
     "strict": true,
-    "removeComments": true
+    "removeComments": true,
+    "esModuleInterop": true
   }
 }

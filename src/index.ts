@@ -9,16 +9,17 @@ import * as jwt from 'jsonwebtoken'
 import { Context, Token } from './types'
 import { PORT } from './constant'
 import Koa from 'koa'
+import { createServer } from 'http'
 import { GraphQLError } from 'graphql'
 import io from 'socket.io'
 
 const app = new Koa()
+const server = createServer(app.callback())
 
 // inject socket.io in koa context
-app.context.io = io(app)
+app.context.io = io(server)
 
-
-const server = new ApolloServer({
+const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
   context: async (req): Promise<Context> => {
@@ -63,10 +64,10 @@ app.use(async (ctx, next) => {
   }
 })
 
-server.applyMiddleware({
+apolloServer.applyMiddleware({
   app,
   path: '/',
   cors: true
 })
 
-app.listen(PORT, () => console.log(`app ready on port ${PORT}`))
+server.listen(PORT, () => console.log(`app ready on port ${PORT}`))

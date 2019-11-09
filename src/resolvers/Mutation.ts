@@ -33,6 +33,7 @@ const Mutation = {
     if (!ctx.user) {
       throw new AuthenticationError('Not authorized')
     }
+    ctx.io.emit('talk_created')
     return ctx.prisma.createTalk({
       name,
       description

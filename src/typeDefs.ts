@@ -14,12 +14,12 @@ const typeDefs = gql`
     }
     
     type Mutation {
-        signup(
+        signUp(
             email: String!
             password: String!
             username: String!
         ): AuthPayload!
-        signin(email: String!, password: String!): AuthPayload!
+        signIn(email: String!, password: String!): AuthPayload!
         createTalk(name: String!, description: String!): Talk!
         joinTalk(id: ID!): Talk!
         leaveTalk(id: ID!): Talk!

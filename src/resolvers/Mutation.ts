@@ -5,7 +5,7 @@ import { AuthPayload, Context } from '../types'
 import { Post, Talk, User } from '../generated/prisma-client'
 
 const Mutation = {
-  async signup (root: any, args: any, ctx: Context): Promise<AuthPayload> {
+  async signUp (root: any, args: any, ctx: Context): Promise<AuthPayload> {
     const password = await bcrypt.hash(args.password, 10)
     const user = await ctx.prisma.createUser({ ...args, password })
     return {
@@ -14,7 +14,7 @@ const Mutation = {
     }
   },
 
-  async signin (root: any, { email, password }: any, ctx: Context): Promise<AuthPayload> {
+  async signIn (root: any, { email, password }: any, ctx: Context): Promise<AuthPayload> {
     const user = await ctx.prisma.user({ email })
     if (!user) {
       throw new Error('Invalid email')

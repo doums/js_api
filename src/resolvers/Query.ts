@@ -11,17 +11,13 @@ const Query = {
     return ctx.prisma.post({ id })
   },
 
-  async postsByActiveTalk (root: any, args: any, ctx: Context): Promise<Array<Post>> {
-    const { user } = ctx
-    if (!user) {
-      throw new AuthenticationError('Not authorized')
-    }
-    const activeTalk = await ctx.prisma.user({ id: user.id }).activeTalk()
-    if (!activeTalk) {
-      throw new ApolloError('The user does not have an active talk', 'USER_ERROR')
+  async postsByTalk (root: any, { talkId }: any, ctx: Context): Promise<Array<Post>> {
+    const talkExists = await ctx.prisma.$exists.talk({ id: talkId })
+    if (!talkExists) {
+      throw new ApolloError(`No talk found for id "${talkId}"`, 'USER_ERROR')
     }
     return ctx.prisma.posts({
-      where: { talk: { id: activeTalk.id } }
+      where: { talk: { id: talkId } }
     })
   },
 

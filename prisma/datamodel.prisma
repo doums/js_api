@@ -16,7 +16,6 @@ type User @db(name: "user") {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
   posts: [Post!]! @relation(name: "PostsByUser", onDelete: CASCADE)
-  activeTalk: Talk @relation(name: "UsersByTalk")
 }
 
 type Talk @db(name: "talk") {
@@ -25,6 +24,5 @@ type Talk @db(name: "talk") {
   description: String! @unique
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  activeUsers: [User!]! @relation(name: "UsersByTalk")
   posts: [Post!]! @relation(name: "PostsByTalk", onDelete: CASCADE)
 }

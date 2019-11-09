@@ -35,63 +35,14 @@ const Mutation = {
     }
     return ctx.prisma.createTalk({
       name,
-      description,
-      activeUsers: {
-        connect: { id: ctx.user.id }
-      }
+      description
     })
   },
 
-  async joinTalk (root: any, { id }: any, ctx: Context): Promise<User> {
+  async createPost (root: any, { talkId, text }: any, ctx: Context): Promise<Post> {
     const { user } = ctx
     if (!user) {
       throw new AuthenticationError('Not authorized')
-    }
-    const talkExists = await ctx.prisma.$exists.talk({ id })
-    if (!talkExists) {
-      throw new ApolloError(`No talk found for id "${id}"`, 'USER_ERROR')
-    }
-    const activeTalk = await ctx.prisma.user({ id: user.id }).activeTalk()
-    if (activeTalk && activeTalk.id == id) {
-      return user
-    }
-    return ctx.prisma.updateUser({
-      where: { id: user.id },
-      data: {
-        activeTalk: {
-          connect:  { id }
-        }
-      }
-    })
-  },
-
-  async leaveTalk (root: any, args: any, ctx: Context): Promise<User> {
-    const { user } = ctx
-    if (!user) {
-      throw new AuthenticationError('Not authorized')
-    }
-    const activeTalk = await ctx.prisma.user({ id: user.id }).activeTalk()
-    if (!activeTalk) {
-      return user
-    }
-    return ctx.prisma.updateUser({
-      where: { id: user.id },
-      data: {
-        activeTalk: {
-          disconnect: true
-        }
-      }
-    })
-  },
-
-  async createPost (root: any, { text }: any, ctx: Context): Promise<Post> {
-    const { user } = ctx
-    if (!user) {
-      throw new AuthenticationError('Not authorized')
-    }
-    const activeTalk = await ctx.prisma.user({ id: user.id }).activeTalk()
-    if (!activeTalk) {
-      throw new ApolloError('The user does not have an active talk', 'USER_ERROR')
     }
     const newPost = await ctx.prisma.createPost({
       text,
@@ -99,11 +50,11 @@ const Mutation = {
         connect: { id: user.id }
       },
       talk: {
-        connect: { id: activeTalk.id }
+        connect: { id: talkId }
       }
     })
     ctx.io.emit('post_created', {
-      talkId: activeTalk.id
+      talkId
     })
     return newPost
   },

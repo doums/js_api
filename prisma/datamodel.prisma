@@ -2,7 +2,7 @@ type Post @db(name: "post") {
   id: ID! @id
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  body: String!
+  text: String!
   author: User! @relation(name: "PostsByUser")
   talk: Talk! @relation(name: "PostsByTalk")
 }
@@ -16,7 +16,7 @@ type User @db(name: "user") {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
   posts: [Post!]! @relation(name: "PostsByUser", onDelete: CASCADE)
-  activeTalks: [Talk!]!
+  activeTalk: Talk @relation(name: "UsersByTalk")
 }
 
 type Talk @db(name: "talk") {
@@ -25,6 +25,6 @@ type Talk @db(name: "talk") {
   description: String! @unique
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  activeUsers: [User!]!
+  activeUsers: [User!]! @relation(name: "UsersByTalk")
   posts: [Post!]! @relation(name: "PostsByTalk", onDelete: CASCADE)
 }

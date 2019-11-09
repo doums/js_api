@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-server-koa'
+import { ApolloError, AuthenticationError } from 'apollo-server-koa'
 import { Post, Talk, User } from '../generated/prisma-client'
 import { AuthCheck, Context } from '../types'
 
@@ -9,6 +9,20 @@ const Query = {
       throw new ApolloError(`No post found for id "${id}"`, 'USER_ERROR')
     }
     return ctx.prisma.post({ id })
+  },
+
+  async postsByActiveTalk (root: any, args: any, ctx: Context): Promise<Array<Post>> {
+    const { user } = ctx
+    if (!user) {
+      throw new AuthenticationError('Not authorized')
+    }
+    const activeTalk = await ctx.prisma.user({ id: user.id }).activeTalk()
+    if (!activeTalk) {
+      throw new ApolloError('The user does not have an active talk', 'USER_ERROR')
+    }
+    return ctx.prisma.posts({
+      where: { talk: { id: activeTalk.id } }
+    })
   },
 
   async talk (root: any, { id }: any, ctx: Context): Promise<Talk | null> {

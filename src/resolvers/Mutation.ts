@@ -42,7 +42,7 @@ const Mutation = {
     })
   },
 
-  async joinTalk (root: any, { id }: any, ctx: Context): Promise<Talk> {
+  async joinTalk (root: any, { id }: any, ctx: Context): Promise<User> {
     const { user } = ctx
     if (!user) {
       throw new AuthenticationError('Not authorized')
@@ -51,55 +51,47 @@ const Mutation = {
     if (!talkExists) {
       throw new ApolloError(`No talk found for id "${id}"`, 'USER_ERROR')
     }
-    const activeUsers = await ctx.prisma.talk({ id }).activeUsers()
-    if (activeUsers.find((activeUser: User) => activeUser.id == user.id)) {
-      throw new ApolloError('The user is already participating in this talk', 'USER_ERROR')
+    const activeTalk = await ctx.prisma.user({ id: user.id }).activeTalk()
+    if (activeTalk && activeTalk.id == id) {
+      return user
     }
-    return ctx.prisma.updateTalk({
-      where: { id },
+    return ctx.prisma.updateUser({
+      where: { id: user.id },
       data: {
-        activeUsers: {
-          connect:  { id: user.id }
+        activeTalk: {
+          connect:  { id }
         }
       }
     })
   },
 
-  async leaveTalk (root: any, { id }: any, ctx: Context): Promise<Talk> {
+  async leaveTalk (root: any, args: any, ctx: Context): Promise<User> {
     const { user } = ctx
     if (!user) {
       throw new AuthenticationError('Not authorized')
     }
-    const talkExists = await ctx.prisma.$exists.talk({ id })
-    if (!talkExists) {
-      throw new ApolloError(`No talk found for id "${id}"`, 'USER_ERROR')
+    const activeTalk = await ctx.prisma.user({ id: user.id }).activeTalk()
+    if (!activeTalk) {
+      return user
     }
-    const activeUsers = await ctx.prisma.talk({ id }).activeUsers()
-    if (!activeUsers.find((activeUser: User) => activeUser.id == user.id)) {
-      throw new ApolloError('The user does not participate in this discussion', 'USER_ERROR')
-    }
-    return ctx.prisma.updateTalk({
-      where: { id },
+    return ctx.prisma.updateUser({
+      where: { id: user.id },
       data: {
-        activeUsers: {
-          disconnect:  { id: user.id }
+        activeTalk: {
+          disconnect: true
         }
       }
     })
   },
 
-  async createPost (root: any, { text, talkId }: any, ctx: Context): Promise<Post> {
+  async createPost (root: any, { text }: any, ctx: Context): Promise<Post> {
     const { user } = ctx
     if (!user) {
       throw new AuthenticationError('Not authorized')
     }
-    const talkExists = await ctx.prisma.$exists.talk({ id: talkId })
-    if (!talkExists) {
-      throw new ApolloError(`No talk found for id "${talkId}"`, 'USER_ERROR')
-    }
-    const activeUsers = await ctx.prisma.talk({ id: talkId }).activeUsers()
-    if (!activeUsers.find((activeUser: User) => activeUser.id === user.id)) {
-      throw new ApolloError('The user does not participate in this discussion', 'USER_ERROR')
+    const activeTalk = await ctx.prisma.user({ id: user.id }).activeTalk()
+    if (!activeTalk) {
+      throw new ApolloError('The user does not have an active talk', 'USER_ERROR')
     }
     const newPost = await ctx.prisma.createPost({
       text,
@@ -107,11 +99,11 @@ const Mutation = {
         connect: { id: user.id }
       },
       talk: {
-        connect: { id: talkId }
+        connect: { id: activeTalk.id }
       }
     })
     ctx.io.emit('post_created', {
-      talkId
+      talkId: activeTalk.id
     })
     return newPost
   },

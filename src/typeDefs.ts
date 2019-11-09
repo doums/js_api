@@ -8,6 +8,7 @@ const typeDefs = gql`
         talk(id: ID!): Talk!
         user(id: ID!): User!
         posts: [Post!]!
+        postsByActiveTalk: [Post!]!
         talks: [Talk!]!
         users: [User!]!
         amIAuth: AuthCheck!
@@ -21,9 +22,9 @@ const typeDefs = gql`
         ): AuthPayload!
         signIn(email: String!, password: String!): AuthPayload!
         createTalk(name: String!, description: String!): Talk!
-        joinTalk(id: ID!): Talk!
-        leaveTalk(id: ID!): Talk!
-        createPost(text: String!, talkId: ID!): Post!
+        joinTalk(id: ID!): User!
+        leaveTalk: User!
+        createPost(text: String!): Post!
         updatePost(id: ID!, text: String!): Post!
         deletePost(id: ID!): Post!
         updateBio(bio: String!): User!
@@ -61,7 +62,7 @@ const typeDefs = gql`
         createdAt: DateTime!
         updatedAt: DateTime!
         posts: [Post!]!
-        activeTalks: [Talk!]!
+        activeTalk: Talk
     }
     
     type AuthCheck {

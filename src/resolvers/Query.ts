@@ -1,4 +1,4 @@
-import { ApolloError, AuthenticationError } from 'apollo-server-koa'
+import { ApolloError } from 'apollo-server-koa'
 import { Post, Talk, User } from '../generated/prisma-client'
 import { AuthCheck, Context } from '../types'
 

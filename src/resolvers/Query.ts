@@ -52,7 +52,7 @@ const Query = {
   talks (root: any, args: any, ctx: Context): Promise<Array<Talk>> {
     return ctx.prisma.talks({
       where: args.where,
-      orderBy: args.orderBy,
+      orderBy: 'createdAt_DESC',
       skip: args.skip,
       first: args.first,
       last: args.last

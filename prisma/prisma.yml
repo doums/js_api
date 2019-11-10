@@ -7,5 +7,3 @@ hooks:
   post-deploy:
     - prisma generate --env-file ../.env
 secret: ${env:PRISMA_SECRET}
-seed:
-  import: seed.graphql

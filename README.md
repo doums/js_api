@@ -45,6 +45,9 @@ npm run migrate
 Then to sync again Prisma data models with the new changes applied to the db run
 ```
 prisma introspect
+```
+This will generate a new datamodel based on the migrated db content. Just rename it to `datamodel.prisma` and finally run
+```
 prisma deploy --env-file ../.env
 ```
 

@@ -42,6 +42,12 @@ Playground Prisma service | http://localhost:4469 | https://takprisma.petitmur.b
 Prisma admin | http://localhost:4469/_admin | https://takprisma.petitmur.beer/_admin
 pgAdmin | http://localhost:5000 | -
 
+pgAdmin credentials
+```
+email: prisma
+password: prisma
+```
+
 #### generate a token access for Prisma service
 in `prisma` directory
 ```
@@ -59,6 +65,11 @@ add this in HTTP headers section (replace `token` by a valid token generated as 
 #### build for production
 ```
 npm run build
+```
+
+#### lint
+```
+npm run lint
 ```
 
 #### serve

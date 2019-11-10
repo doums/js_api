@@ -25,5 +25,17 @@ services:
       POSTGRES_PASSWORD: prisma
     volumes:
       - postgres:/var/lib/postgresql/data
+  pgadmin:
+    container_name: full-js-pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: prisma
+      PGADMIN_DEFAULT_PASSWORD: prisma
+      # PGADMIN_ENABLE_TLS: 1
+    ports:
+    - "5000:80"
+      # TLS
+      # - "${PGADMIN_PORT:-5443}:8443"
 volumes:
   postgres: ~

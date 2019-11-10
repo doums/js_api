@@ -15,6 +15,8 @@
     "@types/lodash": "^4.14.146",
     "apollo-server-koa": "^2.9.7",
     "bcrypt": "^3.0.6",
+    "db-migrate": "^0.11.6",
+    "db-migrate-pg": "^1.0.0",
     "dotenv": "^8.2.0",
     "graphql": "^14.5.8",
     "jsonwebtoken": "^8.5.1",

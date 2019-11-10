@@ -1,0 +1,27 @@
+{
+  "dev": {
+    "driver": "pg",
+    "user": "prisma",
+    "password": "prisma",
+    "host": "localhost",
+    "port": 5000,
+    "database": "prisma",
+    "schema": "default$default"
+  },
+  "prod": {
+    "driver": "pg",
+    "user": "prisma",
+    "password": "prisma",
+    "host": "localhost",
+    "database": "prisma",
+    "schema": "default$default"
+  },
+  "pg": {
+    "driver": "pg",
+    "user": "prisma",
+    "password": "prisma",
+    "host": "localhost",
+    "database": "prisma",
+    "schema": "default$default"
+  }
+}

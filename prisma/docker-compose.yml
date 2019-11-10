@@ -24,7 +24,7 @@ services:
       POSTGRES_USER: prisma
       POSTGRES_PASSWORD: prisma
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data2
   pgadmin:
     container_name: full-js-pgadmin
     image: dpage/pgadmin4

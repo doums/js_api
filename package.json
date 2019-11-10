@@ -18,6 +18,7 @@
     "db-migrate": "^0.11.6",
     "db-migrate-pg": "^1.0.0",
     "dotenv": "^8.2.0",
+    "email-regex": "^4.0.0",
     "graphql": "^14.5.8",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.11.0",

@@ -3,10 +3,14 @@ import * as bcrypt from 'bcrypt'
 import { ApolloError, AuthenticationError } from 'apollo-server-koa'
 import { AuthPayload, Context } from '../types'
 import { Post, Talk, User } from '../generated/prisma-client'
+import emailRegex from 'email-regex'
 
 const Mutation = {
   async signUp (root: any, args: any, ctx: Context): Promise<AuthPayload> {
     const password = await bcrypt.hash(args.password, 10)
+    if (!emailRegex({exact: true}).test(args.email)) {
+      throw new ApolloError('provide a valid email address', 'USER_ERROR')
+    }
     const user = await ctx.prisma.createUser({ ...args, password })
     return {
       token: jwt.sign({ userId: user.id }, process.env.API_SECRET),

@@ -7,7 +7,8 @@
     "start": "ts-node-dev --no-notify --respawn --transpileOnly ./src",
     "build": "tsc",
     "serve": "node -r dotenv/config dist/index.js",
-    "lint": "./node_modules/.bin/eslint src/ --ext [.ts]"
+    "lint": "./node_modules/.bin/eslint src/ --ext [.ts]",
+    "migrate": "node migrate.js"
   },
   "author": "Pierre Dommerc",
   "license": "ISC",
@@ -15,8 +16,6 @@
     "@types/lodash": "^4.14.146",
     "apollo-server-koa": "^2.9.7",
     "bcrypt": "^3.0.6",
-    "db-migrate": "^0.11.6",
-    "db-migrate-pg": "^1.0.0",
     "dotenv": "^8.2.0",
     "email-regex": "^4.0.0",
     "graphql": "^14.5.8",
@@ -24,6 +23,8 @@
     "koa": "^2.11.0",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.11",
+    "marv": "^3.1.0",
+    "marv-pg-driver": "^3.0.0",
     "prisma-client-lib": "^1.34.10",
     "shortid": "^2.2.14",
     "socket.io": "^2.3.0"

@@ -28,9 +28,23 @@ prisma deploy --env-file ../.env
 npm start
 ```
 
-#### migration
-in `prisma` directory
+#### Database
+this project use PostgreSQL
+
+#### migration system
+In the majority of cases Prisma can handle automatically and nicely the migrations for us.
+Simply adjust the data models (`datamodel.prisma`) and run the following command (under `prisma` directory) to apply the migration:
 ```
+prisma deploy --env-file ../.env
+```
+But Prisma can't do everything especially when it encounter ambiguous cases. For theses specials cases we need to write the migration scripts (`SQL`) by hand and apply it.
+To do so put theses scripts in the `migrations` folder and simply run
+```
+npm run migrate
+```
+Then to sync again Prisma data models with the new changes applied to the db run
+```
+prisma introspect
 prisma deploy --env-file ../.env
 ```
 

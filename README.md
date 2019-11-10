@@ -40,7 +40,7 @@ prisma deploy --env-file ../.env
 GraphQL Playground API | http://localhost:4001 | https://takapi.petitmur.beer
 Playground Prisma service | http://localhost:4469 | https://takprisma.petitmur.beer
 Prisma admin | http://localhost:4469/_admin | https://takprisma.petitmur.beer/_admin
-pgAdmin | http://localhost:5000 | https://takpgAdmin.petitmur.beer
+pgAdmin | http://localhost:5000 | -
 
 #### generate a token access for Prisma service
 in `prisma` directory

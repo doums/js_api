@@ -37,7 +37,7 @@ prisma deploy --env-file ../.env
 #### useful IPs
 |     | development | production |
 ----- | ----------- | ---------- |
-GraphQL Playground API | http://localhost:4000 | https://takapi.petitmur.beer
+GraphQL Playground API | http://localhost:4001 | https://takapi.petitmur.beer
 Playground Prisma service | http://localhost:4469 | https://takprisma.petitmur.beer
 Prisma admin | http://localhost:4469/_admin | https://takprisma.petitmur.beer/_admin
 pgAdmin | http://localhost:5000 | https://takpgAdmin.petitmur.beer

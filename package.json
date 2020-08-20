@@ -15,7 +15,7 @@
   "dependencies": {
     "@types/lodash": "^4.14.146",
     "apollo-server-koa": "^2.9.7",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "dotenv": "^8.2.0",
     "email-regex": "^4.0.0",
     "graphql": "^14.5.8",
